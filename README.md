@@ -20,17 +20,94 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## Folder structure
+``` bash
+my-nextjs-project/
+│
+├── app/                       # Core application logic and routing
+│   ├── (auth)/                # Grouping for authentication-related pages
+│   │   ├── login/
+│   │   │   ├── page.tsx
+│   │   ├── register/
+│   │       ├── page.tsx
+│   ├── dashboard/             # Dashboard page and layout
+│   │   ├── page.tsx
+│   │   ├── layout.tsx
+│   ├── api/                   # API routes
+│   │   ├── users/
+│   │       ├── route.ts
+│   ├── layout.tsx             # Main layout file
+│   ├── page.tsx               # Home page
+│
+├── components/                # Reusable components
+│   ├── ui/                    # UI components
+│   │   ├── Button.tsx
+│   │   ├── Card.tsx
+│   ├── forms/                 # Form components
+│   │   ├── LoginForm.tsx
+│   ├── layouts/               # Layout components
+│       ├── Header.tsx
+│       ├── Footer.tsx
+│
+├── lib/                       # Core functionality and utilities
+│   ├── api.ts
+│   ├── utils.ts
+│
+├── hooks/                     # Custom React hooks
+│   ├── useUser.ts
+│   ├── useAuth.ts
+│
+├── types/                     # TypeScript types
+│   ├── user.ts
+│   ├── api.ts
+│
+├── styles/                    # Global and component-specific styles
+│   ├── globals.css
+│
+├── public/                    # Static assets
+│   ├── images/
+│       ├── logo.svg
+│
+├── next.config.js             # Next.js configuration
+├── package.json               # Project dependencies and scripts
+├── tsconfig.json              # TypeScript configuration
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Description
+The app Directory: Core Application Logic
+The app directory houses the core logic and routing for your application:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+(auth): Group authentication-related pages like login and registration.
+dashboard: Contains the dashboard page and layout files.
+api: Includes API routes, enabling serverless functions within your app.
+layout.tsx: Defines the main layout, shared across multiple pages.
+page.tsx: The main entry point, often used for the homepage.
+Components: Reusable Building Blocks
+Organize your components for modularity and reuse:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+ui: General UI components like buttons and cards.
+forms: Specific components for handling forms, such as LoginForm.
+layouts: Layout components like headers and footers, ensuring consistent UI across pages.
+The lib Directory: Core Functionality
+The lib directory contains core functionality and utility functions:
 
-## Deploy on Vercel
+api.ts: API client setup and functions for interacting with backend services.
+utils.ts: Utility functions used throughout the application.
+Custom Hooks: Encapsulating Logic
+Store your custom React hooks in the hooks directory:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+useUser.ts: Manages user-related state and logic.
+useAuth.ts: Handles authentication processes.
+Types: TypeScript Definitions
+Organize your TypeScript type definitions in the types directory:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+user.ts: Defines user-related types.
+api.ts: Includes types related to API responses and requests.
+Styles: Global and Component-Specific Styles
+Keep your styles organized:
+
+globals.css: Global CSS styles for the entire application.
+Public Assets
+Store static assets, such as images and icons, in the public directory:
+
+images: Directory for image assets, like the project logo.
