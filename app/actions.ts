@@ -3,7 +3,7 @@
 import { z } from "zod"
 import { checkoutFormSchema } from "@/lib/schemas"
 
-export async function createOrder(data: z.infer<typeof checkoutFormSchema>) {
+export async function createOrder(data: z.infer<typeof checkoutFormSchema>): Promise<void> {
   try {
     // Validate the form data
     const validatedData = checkoutFormSchema.parse(data)
@@ -15,10 +15,8 @@ export async function createOrder(data: z.infer<typeof checkoutFormSchema>) {
     // 4. etc.
 
     console.log("Order created:", validatedData)
-
-    return { success: true }
   } catch (error) {
     console.error("Failed to create order:", error)
-    return { success: false, error: "Failed to create order" }
+    throw error
   }
-} 
+}

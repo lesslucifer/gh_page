@@ -44,7 +44,7 @@ export const HeroContent = () => {
         </p>
         <Button
           variant="outline"
-          className="bg-white text-[#717275] hover:bg-white/90 w-[175px] h-[54px] font-light text-[20px] leading-[22px]"
+          className="bg-white text-[#717275] hover:bg-white/90 w-[175px] h-[54px] font-light text-[20px] leading-[22px] border-none"
         >
           Mua ngay
         </Button>

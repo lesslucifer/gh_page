@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { HeroContext } from './hero-context';
 import { BackgroundCarousel } from '@/components/ui/background-carousel';
 import { HeroContent } from './hero-content';
 
-export const HeroWrapper = () => {
+interface HeroWrapperProps {
+  children?: ReactNode;
+}
+
+export const HeroWrapper: React.FC<HeroWrapperProps> = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   return (

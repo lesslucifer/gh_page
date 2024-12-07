@@ -1,8 +1,5 @@
-import { Dancing_Script } from "next/font/google";
 import Image from "next/image";
 import { greatVibes } from "@/app/fonts";
-
-const dancingScript = Dancing_Script({ subsets: ["vietnamese"] });
 
 const features = [
   {
@@ -48,7 +45,7 @@ const Features = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h2
-            className={`text-[72px] font-normal leading-[72px] text-center text-green-600 mb-4 ${greatVibes.variable} ${dancingScript.variable} font-great-vibes`}
+            className={`text-[72px] font-normal leading-[72px] text-center text-green-600 mb-4 ${greatVibes.variable} font-great-vibes`}
           >
             Cơm ngon đến từ hạt gạo
           </h2>
