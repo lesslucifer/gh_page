@@ -1,0 +1,21 @@
+{
+  "hero": {
+    "title": "Gạo Cao Cấp",
+    "description": "Trải nghiệm hạt gạo chất lượng cao, được chọn lọc và chế biến hoàn hảo."
+  },
+  "features": {
+    "title": "Tính Năng",
+    "quality": "Chất Lượng Cao",
+    "quality_desc": "Chỉ chọn những hạt gạo tốt nhất",
+    "delivery": "Giao Hàng Nhanh",
+    "delivery_desc": "Dịch vụ vận chuyển nhanh chóng và đáng tin cậy",
+    "support": "Hỗ Trợ 24/7",
+    "support_desc": "Luôn sẵn sàng hỗ trợ bạn"
+  },
+  "contact": {
+    "title": "Liên Hệ",
+    "email": "Email",
+    "message": "Tin Nhắn",
+    "send": "Gửi Tin Nhắn"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "hero": {
+    "title": "Premium Rice Grains",
+    "description": "Experience the finest quality rice grains, carefully selected and processed to perfection."
+  },
+  "features": {
+    "title": "Our Features",
+    "quality": "Premium Quality",
+    "quality_desc": "Only the finest rice grains selected",
+    "delivery": "Fast Delivery",
+    "delivery_desc": "Quick and reliable shipping service",
+    "support": "24/7 Support",
+    "support_desc": "Always here to help you"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send Message"
+  }
+}

@@ -32,15 +32,15 @@ const Products = () => {
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl text-gray-700 mb-12">Our Products</h2>
+        <h2 className="text-4xl text-gray-secondary mb-12">Our Products</h2>
         
         <div className="relative">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {products.map((product) => (
-              <Card key={product.id} className="relative border-none shadow-md">
+              <Card key={product.id} className="relative border shadow-md max-w-[370px]">
                 {/* Discount Badge */}
                 {product.discount && (
-                  <div className="absolute right-4 top-4 z-10 bg-yellow-400 rounded-full w-12 h-12 flex items-center justify-center text-sm font-medium">
+                  <div className="absolute right-4 top-4 z-10 bg-yellow-400 rounded-full w-12 h-12 flex items-center justify-center text-sm font-medium text-gray-3">
                     -{product.discount}%
                   </div>
                 )}
@@ -59,8 +59,8 @@ const Products = () => {
                   
                   {/* Product Info */}
                   <div className="text-center">
-                    <h3 className="text-xl mb-2">{product.name}</h3>
-                    <p className="text-gray-500 mb-4">{product.sizes}</p>
+                    <h3 className="text-xl mb-2 text-gray-secondary">{product.name}</h3>
+                    <p className="text-gray-2 mb-4">{product.sizes}</p>
                     <div className="flex justify-center items-center gap-2">
                       {product.originalPrice && (
                         <span className="text-gray-400 line-through">
@@ -73,7 +73,7 @@ const Products = () => {
                     </div>
                     
                     <Button 
-                      className="w-full mt-4 bg-green-600 hover:bg-green-700"
+                      className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white"
                     >
                       Mua ngay
                     </Button>

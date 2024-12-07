@@ -1,6 +1,4 @@
-import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import Navbar from "@/components/Navbar";
 import Features from "@/components/Features";
 import Products from "@/components/Products";
 
@@ -29,12 +27,10 @@ const sampleCartItems = [
 export default function Home() {
   return (
     <main>
-      <Navbar />
-      <Header />
       <Hero />
       <Features />
       <Products />
-      <div className="container mx-auto py-10">
+      <div className="py-10 bg-blue-1">
         <CheckoutForm onSubmit={createOrder} cartItems={sampleCartItems} />
       </div>
     </main>

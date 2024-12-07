@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import Footer from '@/components/Footer'
-
-
-
-const inter = Inter({ subsets: ["latin"] });
+import Footer from "@/components/layouts/Footer";
+import Header from "@/components/layouts/Header";
+import Navbar from "@/components/layouts/Navbar";
+import { monaSans } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Gao Hat - Vietnamese Rice Products",
@@ -18,8 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className}`}>
+    <html lang="en" className={`${monaSans.variable}`}>
+      <body className="font-mona-sans">
+        <Navbar />
+        <Header />
         {children}
         <Footer />
       </body>
