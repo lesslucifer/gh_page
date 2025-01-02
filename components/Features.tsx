@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { greatVibes } from "@/app/fonts";
+import FeatureCard from "./FeatureCard";
 
 const features = [
   {
@@ -41,7 +42,7 @@ const Features = () => {
         />
       </div>
 
-      <div className="container relative mx-auto">
+      <div className="container relative mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
           <h2
@@ -58,23 +59,9 @@ const Features = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20 mb-[90px]">
+        <div className="flex flex-col  md:flex-row md:flex-wrap lg:flex-row gap-6 mt-20 mb-[90px] justify-center items-center">
           {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-green-600 rounded-lg p-6 text-center text-white relative"
-            >
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <Image
-                  src={feature.icon}
-                  alt={feature.title}
-                  width={32}
-                  height={32}
-                />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-sm">{feature.description}</p>
-            </div>
+            <FeatureCard key={index} {...feature} />
           ))}
         </div>
       </div>
