@@ -14,28 +14,113 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { checkoutFormSchema, type CheckoutFormValues } from "@/lib/schemas";
+import { checkoutFormSchema, type CheckoutFormValues, CartItem, CreateOrderInput } from "@/lib/schemas";
 import Image from "next/image";
+import { useCartStore } from "@/stores/useCartStore";
+import { useState, useRef, useEffect } from "react";
+import { QuickAddProductModal } from "../modals/QuickAddProductModal";
+import { OrderSuccessModal } from "../modals/OrderSuccessModal";
+import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import { useCreateOrder } from "@/hooks/useCreateOrder";
 
-interface CheckoutFormProps {
-  onSubmit: (data: CheckoutFormValues) => Promise<void>;
-  cartItems: {
-    id: string;
-    name: string;
-    price: number;
-    quantity: number;
-    size: string;
-    image: string;
-  }[];
+interface PlaceAutocompleteProps {
+  onChange: (address: string, lat?: number, lng?: number) => void;
+  error?: boolean;
+  placeholder?: string;
 }
 
-export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
+const PlaceAutocomplete = ({
+  onChange,
+  error,
+  placeholder,
+}: PlaceAutocompleteProps) => {
+  const [placeAutocomplete, setPlaceAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const places = useMapsLibrary("places");
+
+  // First useEffect to initialize autocomplete
+  useEffect(() => {
+    if (!places || !inputRef.current) return;
+
+    const options = {
+      fields: ["formatted_address", "geometry"],
+      componentRestrictions: { country: "vn" },
+    };
+
+    const autocomplete = new places.Autocomplete(inputRef.current, options);
+    setPlaceAutocomplete(autocomplete);
+
+    // Cleanup function
+    return () => {
+      if (autocomplete) {
+        google.maps.event.clearInstanceListeners(autocomplete);
+      }
+    };
+  }, [places]); // Remove placeAutocomplete from dependencies
+
+  // Second useEffect to handle place_changed event
+  useEffect(() => {
+    if (!placeAutocomplete) return;
+
+    const listener = placeAutocomplete.addListener("place_changed", () => {
+      const place = placeAutocomplete.getPlace();
+      if (place.formatted_address) {
+        const lat = place.geometry?.location?.lat();
+        const lng = place.geometry?.location?.lng();
+        onChange(place.formatted_address, lat, lng);
+      }
+    });
+
+    return () => {
+      if (listener) {
+        google.maps.event.removeListener(listener);
+      }
+    };
+  }, [placeAutocomplete, onChange]);
+
+  return (
+    <input
+      ref={inputRef}
+      type="text"
+      className={`flex h-10 w-full rounded-md border ${
+        error ? "border-red-600" : "border-gray-200"
+      } bg-white px-3 py-2 text-sm placeholder:text-[14px] placeholder:leading-[18.2px] placeholder:font-normal placeholder:text-gray-4 focus:border-green-600 focus-visible:outline-none`}
+      placeholder={placeholder}
+      onChange={(e) => {
+        // Allow typing but value will only be set when place is selected
+        if (!placeAutocomplete) {
+          onChange(e.target.value);
+        }
+      }}
+    />
+  );
+};
+
+export function CheckoutForm() {
+  const { mutateAsync: createOrder } = useCreateOrder({
+    onSuccess: (data) => {
+      console.log("data", data);
+      setIsSuccessOpen(true);
+      setOrderCode(data._id);
+    },
+  });
+
+  const { items: cartItems, updateQuantity, clearCart } = useCartStore();
+  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [orderCode, setOrderCode] = useState<string>();
+  const [addressCoords, setAddressCoords] = useState<{
+    lat?: number;
+    lng?: number;
+  }>({});
+
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     defaultValues: {
       items: cartItems,
       shippingMethod: "same-day",
       paymentMethod: "cod",
+      address: "",
     },
   });
 
@@ -43,7 +128,6 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
     formState: { errors },
   } = form;
 
-  console.log("11111", { errors });
   const total = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
@@ -51,15 +135,35 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
   const shipping = 15000;
   const grandTotal = total + shipping;
 
+  const handleSubmit = async (data: CheckoutFormValues) => {
+    try {
+      const orderData: CreateOrderInput = {
+        ...data,
+        items: cartItems as unknown as CartItem[],
+        addressCoords
+      };
+      await createOrder(orderData);
+    } catch (error) {
+      console.error("Error submitting order:", error);
+    }
+  };
+
+  const handleCloseSuccessModal = () => {
+    setIsSuccessOpen(false);
+    form.reset();
+    clearCart();
+    window.location.reload();
+  };
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex justify-center items-start w-full"
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="flex justify-center items-start w-full px-4 lg:px-0"
       >
         <div className="grid lg:grid-cols-2 gap-8 max-w-[1200px] w-full">
           {/* Left Column - Customer Details */}
-          <div className="bg-white rounded-lg p-6 max-w-[687px] w-full mx-auto">
+          <div className="bg-white rounded-lg p-4 lg:p-8 w-full">
             <h2 className="text-lg font-medium mb-2 text-black-2">
               Chi tiết đơn hàng
             </h2>
@@ -133,19 +237,25 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
                       Địa chỉ nhận hàng
                     </FormLabel>
                     <FormControl>
-                      <Input
+                      <PlaceAutocomplete
+                        error={!!errors.address}
                         placeholder="Số nhà và tên đường"
+                        onChange={(address, lat, lng) => {
+                          field.onChange(address);
+                          setAddressCoords({ lat, lng });
+                        }}
+                      />
+
+                      {/* <Input
                         {...field}
                         className={`rounded-md border-gray-200 placeholder:text-[14px] placeholder:leading-[18.2px] placeholder:font-normal placeholder:text-gray-4 focus:border-green-600
-                          ${
-                            form.formState.errors.address
-                              ? "border-red-600"
-                              : ""
-                          }`}
-                      />
+                        ${
+                          form.formState.errors.address ? "border-red-600" : ""
+                        }`}
+                      /> */}
                     </FormControl>
                     <FormMessage className="text-red-600">
-                      {errors.address ? "Thông tin không đ�ợc để trống" : ""}
+                      {errors.address ? "Thông tin không được để trống" : ""}
                     </FormMessage>
                   </FormItem>
                 )}
@@ -220,7 +330,7 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
           </div>
 
           {/* Right Column - Order Summary */}
-          <div className="bg-white rounded-lg p-6 max-w-[470px] w-full mx-auto">
+          <div className="bg-white rounded-lg p-4 lg:p-8 w-full">
             <h2 className="text-lg font-medium mb-6">Thành tiền</h2>
             <div className="space-y-4">
               <div className="flex text-sm text-gray-500 pb-2 border-b">
@@ -230,7 +340,7 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
               </div>
 
               {cartItems.map((item) => (
-                <div key={item.id} className="flex items-center gap-4">
+                <div key={item.code} className="flex items-center gap-4">
                   <div className="flex items-center flex-1 gap-3">
                     <div className="relative w-12 h-12">
                       <Image
@@ -242,7 +352,7 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
                     </div>
                     <div>
                       <h4 className="font-medium text-sm">{item.name}</h4>
-                      <p className="text-xs text-gray-500">{item.size}</p>
+                      <p className="text-xs text-gray-500">{item.sizes}</p>
                     </div>
                   </div>
 
@@ -251,6 +361,12 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
                       <button
                         type="button"
                         className="px-2 py-1 text-gray-500 hover:bg-gray-100"
+                        onClick={() =>
+                          updateQuantity(
+                            item.code,
+                            Math.max(0, item.quantity - 1)
+                          )
+                        }
                       >
                         -
                       </button>
@@ -258,6 +374,9 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
                       <button
                         type="button"
                         className="px-2 py-1 text-gray-500 hover:bg-gray-100"
+                        onClick={() =>
+                          updateQuantity(item.code, item.quantity + 1)
+                        }
                       >
                         +
                       </button>
@@ -272,6 +391,7 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
 
               <Button
                 type="button"
+                onClick={() => setIsQuickAddOpen(true)}
                 className="text-green-600 text-sm font-medium mt-4 underline decoration-green-600"
               >
                 + Thêm sản phẩm
@@ -290,7 +410,9 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
                 </div>
                 <div className="flex justify-between text-base font-medium pt-2 border-t">
                   <span>Tổng đơn hàng</span>
-                  <span>{grandTotal.toLocaleString()}đ</span>
+                  <span>
+                    {cartItems.length > 0 ? grandTotal.toLocaleString() : 0}đ
+                  </span>
                 </div>
               </div>
 
@@ -339,6 +461,17 @@ export function CheckoutForm({ onSubmit, cartItems }: CheckoutFormProps) {
           </div>
         </div>
       </form>
+
+      <QuickAddProductModal
+        isOpen={isQuickAddOpen}
+        onClose={() => setIsQuickAddOpen(false)}
+      />
+
+      <OrderSuccessModal
+        isOpen={isSuccessOpen}
+        onClose={handleCloseSuccessModal}
+        orderCode={orderCode}
+      />
     </Form>
   );
 }

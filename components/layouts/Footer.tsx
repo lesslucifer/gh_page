@@ -173,7 +173,7 @@ const Footer = () => {
       </div>
 
       {/* Copyright */}
-      <div className="bg-gray-700 text-gray-300 py-4 text-center text-sm">
+      <div className="bg-brown-1 text-white py-4 text-center text-sm">
         © Copyright 2023 Mediastep Software Inc. All Rights Reserved.
       </div>
     </footer>

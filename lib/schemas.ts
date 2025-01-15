@@ -1,19 +1,31 @@
 import { z } from "zod"
 
+export interface CartItem {
+  id: string;
+  code: string;
+  name: string;
+  price: number;
+  quantity: number;
+  size: string;
+  image: string;
+}
+
 export const checkoutFormSchema = z.object({
-  fullName: z.string().min(2, "Họ và tên phải có ít nhất 2 ký tự").nonempty("Thông tin không được để trống"),
-  phone: z.string().min(10, "Số điện thoại không hợp lệ").nonempty("Thông tin không được để trống"),
-  address: z.string().min(2, "Địa chỉ phải có ít nhất 2 ký tự").nonempty("Thông tin không được để trống"),
+  fullName: z.string().min(1),
+  phone: z.string().min(1),
+  address: z.string().min(1),
   note: z.string().optional(),
-  items: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    price: z.number(),
-    quantity: z.number(),
-    size: z.string()
-  })),
   shippingMethod: z.enum(["same-day"]),
-  paymentMethod: z.enum(["cod"])
+  paymentMethod: z.enum(["cod"]),
+  items: z.array(z.custom<CartItem>())
 })
 
-export type CheckoutFormValues = z.infer<typeof checkoutFormSchema> 
+export type CheckoutFormValues = z.infer<typeof checkoutFormSchema>
+
+export interface CreateOrderInput extends Omit<CheckoutFormValues, 'items'> {
+  items: CartItem[];
+  addressCoords: {
+    lat?: number;
+    lng?: number;
+  };
+} 
