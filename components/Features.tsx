@@ -34,7 +34,7 @@ const Features = () => {
     <section className="py-16 bg-white relative">
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none mt-[350px] md:mt-[230px]">
         <Image
-          src="/images/backgrounds/green-line.png"
+          src="/images/backgrounds/brown-line.png"
           alt="Decorative background"
           width={1920}
           height={1080}

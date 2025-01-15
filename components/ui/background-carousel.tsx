@@ -45,7 +45,7 @@ export const BackgroundCarousel = ({ onSlideChange }: BackgroundCarouselProps) =
   }, [emblaApi, scrollNext]);
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 z-0 overflow-hidden">
       <div className="h-full" ref={emblaRef}>
         <div className="flex h-full">
           {backgroundImages.map((image, index) => (
