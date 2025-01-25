@@ -9,8 +9,8 @@ import { Providers } from './providers';
 import { GoogleMapsProvider } from '@/components/providers/GoogleMapsProvider';
 
 export const metadata: Metadata = {
-  title: "Gao Hat - Vietnamese Rice Products",
-  description: "Premium quality Vietnamese rice products",
+  title: "Gạo Hạt",
+  description: "Cơm ngon từ hạt gạo",
 };
 
 export default function RootLayout({
