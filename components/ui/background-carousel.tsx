@@ -5,9 +5,9 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useState, useCallback } from "react";
 
 const backgroundImages = [
-  "/images/backgrounds/background.png",
-  "/images/backgrounds/background2.png",
-  "/images/backgrounds/background3.png",
+  "./images/backgrounds/background.png",
+  "./images/backgrounds/background2.png",
+  "./images/backgrounds/background3.png",
 ];
 
 const AUTO_SCROLL_INTERVAL = 5000; // 5 seconds
